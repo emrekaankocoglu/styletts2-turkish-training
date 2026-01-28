@@ -1,0 +1,9 @@
+[submodule "PL-BERT"]
+	path = PL-BERT
+	url = https://github.com/emrekaankocoglu/PL-BERT.git
+[submodule "AuxiliaryASR"]
+	path = AuxiliaryASR
+	url = https://github.com/emrekaankocoglu/AuxiliaryASR.git
+[submodule "StyleTTS2"]
+	path = StyleTTS2
+	url = https://github.com/emrekaankocoglu/StyleTTS2.git
