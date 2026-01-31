@@ -1,0 +1,39 @@
+# Turkish PL-BERT Training Configuration
+# Hardware: 4x RTX 3090 (24GB each)
+# Matches original PL-BERT hyperparameters
+
+log_dir: "turkish_recipe/plbert/checkpoints"
+mixed_precision: "fp16"
+data_folder: "turkish_recipe/plbert/data/turkish_wikipedia_processed"
+
+# Batch size settings (matching original effective batch of 192)
+batch_size: 32  # Per-step batch (8 per GPU with split_batches)
+gradient_accumulation_steps: 6  # 32 * 6 = 192 effective batch size
+
+save_interval: 5000
+log_interval: 10
+num_process: 4  # 4x 3090 GPUs
+num_steps: 1000000  # Same as original (1M steps)
+
+# Learning rate (same as original)
+lr: 0.0001  # 1e-4
+
+dataset_params:
+    tokenizer: "bert-base-multilingual-cased"
+    token_separator: " "
+    token_mask: "M"
+    word_separator: 102  # [SEP] token for bert-multilingual
+    token_maps: "turkish_recipe/plbert/data/token_maps_turkish.pkl"
+    max_mel_length: 512
+    word_mask_prob: 0.15
+    phoneme_mask_prob: 0.1
+    replace_prob: 0.2
+
+model_params:
+    vocab_size: 213  # Expanded for Turkish IPA
+    hidden_size: 768
+    num_attention_heads: 12
+    intermediate_size: 2048
+    max_position_embeddings: 512
+    num_hidden_layers: 12
+    dropout: 0.1

@@ -62,3 +62,8 @@ maildir
 *.wav
 *.txt
 *.pth
+*.pkl
+Checkpoint/
+checkpoints/
+*.json
+data/
