@@ -1,0 +1,8 @@
+# Turkish AuxiliaryASR config for StyleTTS2
+# This file is read by StyleTTS2's load_ASR_models() function
+
+model_params:
+  input_dim: 80
+  hidden_dim: 256
+  n_token: 116
+  token_embedding_dim: 256

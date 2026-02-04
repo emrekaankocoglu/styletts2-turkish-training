@@ -12,7 +12,7 @@ from torch import nn
 from PIL import Image
 from tqdm import tqdm
 
-from utils import calc_wer
+from utils import calc_ctc_error_rate
 
 import logging
 logger = logging.getLogger(__name__)
@@ -224,11 +224,14 @@ class Trainer(object):
             eval_losses["eval/loss"].append(loss.item())
 
             _, amax_ppgs = torch.max(ppgs, dim=2)
-            # Ignore special tokens (0-4: pad, sos, eos, unk, space) AND blank token (115)
-            ignore_tokens = list(range(5)) + [115]
-            wers = [calc_wer(target[:text_length],
-                             pred[:mel_length],
-                             ignore_indexes=ignore_tokens) \
+            # Proper CTC-style error rate: greedy collapse + edit distance.
+            # Keep ignore tokens consistent with upstream (0-4: pad, sos, eos, unk, space).
+            blank_index = getattr(self.criterion["ctc"], "blank", 115)
+            ignore_tokens = list(range(5))
+            wers = [calc_ctc_error_rate(target[:text_length],
+                                        pred[:mel_length],
+                                        blank=blank_index,
+                                        ignore_indexes=ignore_tokens) \
                     for target, pred, text_length, mel_length in zip(
                             text_input.cpu(), amax_ppgs.cpu(), text_input_length.cpu(), mel_input_length.cpu())]
             eval_losses["eval/wer"].extend(wers)
